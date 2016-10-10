@@ -35,13 +35,13 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    /**
-     * @expectedException BadFunctionCallException
-     * @expectedExceptionMessage Call to undefined method Statsd\Client::fooFunc()
-     */
     public function testClientWithWrongCommand()
     {
         $statsd = new Client();
+        $this->setExpectedException(
+            '\BadFunctionCallException',
+            'Call to undefined method Statsd\Client::fooFunc()'
+        );
         $statsd->fooFunc("foo", "bar");
     }
 
@@ -98,10 +98,6 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    /**
-     * @expectedException Exception
-     * @expectedExceptionMessage DUMMY EXCEPTION
-     */
     public function testClientCallCommandWithException()
     {
         $cmd = $this->getMock(
@@ -115,6 +111,8 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
         $statsd = new Client(array('throw_exception'=> true));
         $statsd->addCommand($cmd);
+
+        $this->setExpectedException('Exception', 'DUMMY EXCEPTION');
         $statsd->__call('incr', array('foo.bar', 1));
     }
 
