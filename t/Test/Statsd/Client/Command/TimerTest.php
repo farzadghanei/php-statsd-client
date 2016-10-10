@@ -57,4 +57,22 @@ class TimerTest extends \PHPUnit_Framework_TestCase
             $timer->timingSince('foo.bar', $start)
         );
     }
+
+    /**
+     * @dataProvider provideCallableValues
+     */
+    public function testTimeCallable($callable)
+    {
+        $this->markTestIncompelete('not implemented yet');
+        $timer = new Timer();
+        $result = $timer->timeCallable('foo.bar', $callable);
+        $this->assertRegExp('/foo.bar:\d+|ms/', $result);
+    }
+
+    public function provideCallableValues()
+    {
+        return array(
+            'function name string' => array('phpinfo')
+        );
+    }
 }
