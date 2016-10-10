@@ -10,7 +10,7 @@ class TimerTest extends \PHPUnit_Framework_TestCase
     {
         $timer = new Timer();
         $this->assertEquals(
-            array('timing'),
+            array('timing', 'timingSince'),
             $timer->getCommands()
         );
     }
@@ -45,6 +45,16 @@ class TimerTest extends \PHPUnit_Framework_TestCase
         $this->assertRegExp(
             '/foo.bar:\d+|ms/',
             $result
+        );
+    }
+
+    public function testTimingSince()
+    {
+        $start = time();
+        $timer = new Timer();
+        $this->assertRegExp(
+            '/foo\.bar\:\d+\|ms/',
+            $timer->timingSince('foo.bar', $start)
         );
     }
 }
