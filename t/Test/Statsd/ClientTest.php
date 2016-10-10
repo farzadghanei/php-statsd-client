@@ -1,11 +1,15 @@
 <?php
 namespace Test\Statsd;
 
+use Exception;
+use Statsd\Client;
+use Statsd\Client\Command\Counter;
+
 class ClientTest extends \PHPUnit_Framework_TestCase
 {
     public function testClientWithDefaultSettings()
     {
-        $statsd = new \Statsd\Client();
+        $statsd = new Client();
         $this->assertEquals(
             '',
             $statsd->getPrefix()
@@ -19,7 +23,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
     public function testClientWithOverideSettings()
     {
-        $statsd = new \Statsd\Client(
+        $statsd = new Client(
             array(
                 'prefix' => 'foo.bar',
             )
@@ -37,7 +41,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
      */
     public function testClientWithWrongCommand()
     {
-        $statsd = new \Statsd\Client();
+        $statsd = new Client();
         $statsd->fooFunc("foo", "bar");
     }
 
@@ -64,9 +68,9 @@ class ClientTest extends \PHPUnit_Framework_TestCase
             ->method('send')
             ->with("foo.bar:1|c");
 
-        $statsd = new \Statsd\Client(array('connection' => $sc));
+        $statsd = new Client(array('connection' => $sc));
         $statsd->addCommand(
-            new \Statsd\Client\Command\Counter()
+            new Counter()
         );
 
         $this->assertInstanceOf(
@@ -82,9 +86,9 @@ class ClientTest extends \PHPUnit_Framework_TestCase
             ->method('send')
             ->with("top.foo.bar:1|c");
 
-        $statsd = new \Statsd\Client(array('connection' => $sc));
+        $statsd = new Client(array('connection' => $sc));
         $statsd->addCommand(
-            new \Statsd\Client\Command\Counter()
+            new Counter()
         );
         $statsd->setPrefix('top');
 
@@ -93,7 +97,6 @@ class ClientTest extends \PHPUnit_Framework_TestCase
             $statsd->incr('foo.bar', 1)
         );
     }
-
 
     /**
      * @expectedException Exception
@@ -108,16 +111,16 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
         $cmd->expects($this->once())
             ->method('incr')
-            ->will($this->throwException(new \Exception("DUMMY EXCEPTION")));
+            ->will($this->throwException(new Exception("DUMMY EXCEPTION")));
 
-        $statsd = new \Statsd\Client(array('throw_exception'=> true));
+        $statsd = new Client(array('throw_exception'=> true));
         $statsd->addCommand($cmd);
         $statsd->__call('incr', array('foo.bar', 1));
     }
 
     public function testChaingCall()
     {
-        $statsd = new \Statsd\Client();
+        $statsd = new Client();
         $result = $statsd->incr('foo.bar')
             ->decr('foo.bar')
             ->gauge('foo.bar', 10);
