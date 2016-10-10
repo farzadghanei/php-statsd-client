@@ -15,9 +15,9 @@ class ClientTest extends \PHPUnit_Framework_TestCase
             $statsd->getPrefix()
         );
 
-        $all_settings = $statsd->getSettings();
+        $allSettings = $statsd->getSettings();
         $this->assertFalse(
-            $all_settings['throw_exception']
+            $allSettings['throw_exception']
         );
     }
 

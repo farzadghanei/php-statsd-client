@@ -18,10 +18,10 @@ class Timer extends \Statsd\Client\Command
     public function timing($stat, $delta, $rate=1)
     {
         if ($this->isClosure($delta)) {
-            $start_time = gettimeofday(true);
+            $startTime = gettimeofday(true);
             $delta();
-            $end_time = gettimeofday(true);
-            $delta = ($end_time - $start_time) * 1000;
+            $endTime = gettimeofday(true);
+            $delta = ($endTime - $startTime) * 1000;
         }
 
         return $this->prepare(
